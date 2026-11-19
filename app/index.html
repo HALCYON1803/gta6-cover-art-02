@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vice City Cover Lab — GTA 6-style cover art maker</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">VC</span>
+    <div>
+      <h1>Vice City Cover Lab</h1>
+      <p>Turn any photo into GTA 6-style cover art — offline, no upload.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="undo" type="button" title="Undo (Ctrl+Z)">↩ Undo</button>
+    <button id="redo" type="button" title="Redo (Ctrl+Shift+Z)">↪ Redo</button>
+    <button id="random" type="button" title="Random look (R)">🎲 Surprise me</button>
+    <button id="reset" type="button">Reset</button>
+    <button id="exportAll" type="button" class="primary">Export all 3 sizes</button>
+  </div>
+</header>
+<main class="lab">
+  <section class="stage">
+    <canvas id="cover" width="1920" height="1080" aria-label="Cover preview — click a panel to select it, drag to pan, scroll to zoom"></canvas>
+    <p class="stage-hint">Click a panel to select it · drag to pan the photo · scroll to zoom · Ctrl+Z undo · Ctrl+S export</p>
+    <div class="export-row">
+      <label>Export size
+        <select id="size"></select>
+      </label>
+      <button id="exportOne" type="button" class="primary big">⬇ Export PNG</button>
+      <p id="status" role="status"></p>
+    </div>
+  </section>
+  <aside class="panel">
+    <section class="group">
+      <h2>1 · Photos</h2>
+      <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Add photos">
+        Drop photos here or click to add up to 6
+        <input id="upload" type="file" accept="image/*" multiple hidden>
+      </div>
+      <div id="photos" class="photo-chips"></div>
+      <p class="note">Click a chip to put that photo in the selected panel. Your photos never leave your machine.</p>
+    </section>
+    <section class="group">
+      <h2>2 · One-click looks</h2>
+      <div id="looks" class="grid looks"></div>
+    </section>
+    <section class="group">
+      <h2>3 · Layout</h2>
+      <div id="layouts" class="grid"></div>
+    </section>
+    <section class="group">
+      <h2>4 · Colour grade</h2>
+      <div id="grades" class="grid grades"></div>
+    </section>
+    <section class="group">
+      <h2>5 · Words</h2>
+      <label>Title <input id="title" type="text" maxlength="28" value="VICE HEIST"></label>
+      <div id="titleChips" class="chips"></div>
+      <label>Subtitle (script) <input id="subtitle" type="text" maxlength="40" value="Golden Hour Getaway"></label>
+      <label>Tagline <input id="tagline" type="text" maxlength="60" value="PALMS  •  NEON  •  NO BRAKES"></label>
+      <label>Issue line <input id="issue" type="text" maxlength="60" value="VICE CITY  •  ISSUE No. 06  •  2026"></label>
+      <div class="row">
+        <label>Badge <input id="badge" type="text" maxlength="10" value="EST. 2026"></label>
+        <label>Heat <input id="heat" type="range" min="0" max="5" step="1" value="5"> <span id="heatVal">5 ★</span></label>
+      </div>
+      <div class="row">
+        <label>Title style <select id="titleStyle"></select></label>
+        <label>Title size <input id="titleScale" type="range" min="0.7" max="1.4" step="0.05" value="1"> <span id="titleScaleVal">1.0×</span></label>
+      </div>
+      <label class="check"><input id="bubble" type="checkbox"> Speech bubble</label>
+      <label id="bubbleTextRow" style="display:none">Bubble text <input id="bubbleText" type="text" maxlength="40" value="Best night ever!"></label>
+    </section>
+    <section class="group">
+      <h2>6 · Selected panel</h2>
+      <div class="row panel-nav">
+        <button id="prevPanel" type="button">‹ Prev</button>
+        <strong id="panelLabel">Panel 1</strong>
+        <button id="nextPanel" type="button">Next ›</button>
+      </div>
+      <label>Photo in this panel <select id="panelPhoto"></select></label>
+      <label>Zoom <input id="zoom" type="range" min="1" max="3" step="0.01" value="1"> <span id="zoomVal">1.00×</span></label>
+      <label>Pan left–right <input id="panX" type="range" min="-0.6" max="0.6" step="0.01" value="0"></label>
+      <label>Pan up–down <input id="panY" type="range" min="-0.6" max="0.6" step="0.01" value="0"></label>
+      <label>Rotate photo <input id="rot" type="range" min="-45" max="45" step="1" value="0"> <span id="rotVal">0°</span></label>
+      <label>Panel filter <select id="panelFilter"></select></label>
+      <label class="check"><input id="flip" type="checkbox"> Flip photo sideways</label>
+    </section>
+    <section class="group">
+      <h2>7 · Finish</h2>
+      <label>Panel frame <select id="frameStyle"></select></label>
+      <div class="checks">
+        <label class="check"><input id="palms" type="checkbox" checked> Palm trees</label>
+        <label class="check"><input id="skyline" type="checkbox" checked> City skyline</label>
+        <label class="check"><input id="birds" type="checkbox" checked> Birds</label>
+        <label class="check"><input id="waves" type="checkbox"> Ocean waves</label>
+        <label class="check"><input id="halftone" type="checkbox" checked> Halftone sky</label>
+        <label class="check"><input id="rays" type="checkbox" checked> Sun rays</label>
+        <label class="check"><input id="grain" type="checkbox" checked> Film grain</label>
+        <label class="check"><input id="vignette" type="checkbox" checked> Vignette</label>
+      </div>
+      <p class="note">All lettering and art here are original. No Rockstar Games logos, artwork or fonts are used. Fonts: Anton &amp; Pacifico (SIL Open Font License), bundled locally.</p>
+    </section>
+  </aside>
+</main>
+<script type="module" src="./src/lab.js"></script>
+</body>
+</html>
